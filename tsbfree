@@ -1,0 +1,711 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+
+Fluent:Notify({
+	Title = "Cumsploit Injected",
+	Content = "Loading...",
+	Duration = 4
+})
+
+task.wait(.5)
+local namee = game.Players.LocalPlayer.DisplayName or game.Players.LocalPlayer.Name
+local Window = Fluent:CreateWindow({
+	Title = "The Strongest Battlegrounds 👊 "..namee,
+	SubTitle = "Made by Naviaz1337",
+	TabWidth = 160,
+	Size = UDim2.fromOffset(580, 460),
+	Acrylic = true,
+	Theme = "Dark",
+	MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tabs = {
+	Info = Window:AddTab({ Title = "v1.3.0 - Info", Icon = "sticky-note" }),
+	Main = Window:AddTab({ Title = "World", Icon = "monitor" }),
+	Combat = Window:AddTab({ Title = "Combat", Icon = "sword" }),
+	Player = Window:AddTab({ Title = "Player", Icon = "user" }),
+    Admin = Window:AddTab({ Title = "⚠️ - Admin", Icon = "person-standing" }),
+	Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
+}
+
+local TeleportS = Tabs.Main:AddSection("Teleport Options")
+local PartCreation = Tabs.Main:AddSection("Part Creation")
+local MapAutos = Tabs.Main:AddSection("Map Autos")
+local BringOptions = Tabs.Combat:AddSection("Bring Options")
+local AutoFarm = Tabs.Combat:AddSection("Auto Farms")
+local Movesets = Tabs.Combat:AddSection("Movesets")
+local CharacterMan = Tabs.Player:AddSection("Character Manipulation")
+local ScriptExec = Tabs.Player:AddSection("Scripts")
+local SettingFunc = Tabs.Settings:AddSection("Function Settings")
+local GameSettings = Tabs.Settings:AddSection("Game Settings")
+local GUISettings = Tabs.Settings:AddSection("GUI Settings")
+local PAdmin = Tabs.Admin:AddSection("Other Player Admin")
+
+
+
+local Options = Fluent.Options
+
+local teleportvals = {
+	["Platform"] = CFrame.new(146.5, 760, 25.1),
+	["Center"] = CFrame.new(146.5, 540, 25.1),
+	["Wall"] = CFrame.new(-61.38 , 652.838 , -332.42),
+    ["Wall2"] = CFrame.new(371.84277, 699.1, 369.612),
+	["UnderMap"] = CFrame.new(146.5, 200, 25.1)
+}
+
+local commands = {
+	"!finisher",
+	"!tptop",
+	"!bring",
+    "!tpb"
+}
+
+--Keep as same index as commands
+-- not doing dis rn but i will for sure
+local SHcommands = {
+	"f",
+	"tt",
+	"b"
+}
+
+getgenv().autofrozen = false
+getgenv().farmdeaths = false
+getgenv().fdeathplr = nil
+getgenv().tpplr = nil
+getgenv().cframe = false
+getgenv().sped = false
+getgenv().currentpos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+getgenv().nostun = false
+getgenv().autoplayerlist = true
+getgenv().antilag = false
+getgenv().speedvalue = 0.20
+getgenv().waitt = 1
+getgenv().dropdownwait = 15
+getgenv().AssignedPlayer = nil
+getgenv().adminon = false
+
+
+task.wait(1)
+game:GetService("RunService").Heartbeat:Connect(function()
+	task.wait(getgenv().waitt)
+
+
+	if getgenv().cframe == true then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame =
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame +
+			game.Players.LocalPlayer.Character.Humanoid.MoveDirection * getgenv().speedvalue
+		task.wait(0.08)
+	end
+
+	if getgenv().nostun == true then
+		task.wait(0.5)
+		for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+			if v:IsA("Accessory") then
+				v:Destroy()
+			end
+		end
+	end
+
+	if getgenv().autofrozen == true then
+        task.wait(.1)
+		if workspace.Thrown["Frozen Lock"] then
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Thrown["Frozen Lock"].Lock.CFrame
+			task.wait(1)
+		end
+	end
+
+	if getgenv().farmdeaths == true then
+		local plr = game.Players[getgenv().fdeathplr] 
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = plr.Character.HumanoidRootPart.CFrame
+		task.wait(0.2)
+		game.Players.LocalPlayer.Character.Humanoid.Health = 0
+		task.wait(15)
+	end
+
+	if getgenv().antilag == true then
+		local grass = game.workspace.Map["GrassTop"]
+		local walls = game.workspace.Map["Walls"]
+		local trees = game.workspace.Map["Trees"]
+
+		grass:Destroy()
+		task.wait(1)
+		walls:Destroy()
+		task.wait(1)
+		trees:Destroy()
+		task.wait(5)
+	end
+end)
+
+
+local function platformE()
+	wait(.1)
+	local platformp = Instance.new("Part")
+	platformp.Name = "Wall"
+	platformp.Size = Vector3.new(40,5,40)
+	platformp.Anchored = true
+	platformp.CanCollide = true
+	platformp.Parent = workspace
+	platformp.Position = Vector3.new(146.5, 750, 25.1)
+
+	wait(.1)
+	local platformp2 = Instance.new("Part")
+	platformp2.Name = "Wall"
+	platformp2.Size = Vector3.new(40,5,40)
+	platformp2.Anchored = true
+	platformp2.CanCollide = true
+	platformp2.Parent = workspace
+	platformp2.Position = Vector3.new(146.5, 190, 25.1)
+end
+
+local function dcaf(char)
+    local plr = game.Players:GetPlayerFromCharacter(char)
+
+    while char do
+    task.wait(1)
+        if plr.Backpack:FindFirstChild("Shove") and char:FindFirstChild("Highlight") then
+
+            char.Highlight:Destroy()
+
+        else
+            continue
+        end
+    end
+end
+
+local function checkfordc()
+	for i,v in pairs(game.Players:GetChildren()) do
+		if v.Backpack:FindFirstChild("Serious Punch") then
+			hl = Instance.new("Highlight")
+			hl.FillTransparency = 0.6
+			hl.OutlineColor = Color3.new(0,0,0)
+            hl.Adornee = v.Character
+            hl.Parent = v.Character
+            dcaf(v.Character)
+		else
+			continue
+		end
+	end
+end
+task.wait(.5)
+
+Tabs.Info:AddParagraph({
+    Title = "⚠️ - Disclaimer",
+    Content = "This script is still in development and may contain bugs or unfinished features.\nIf you encounter any issues or errors,\nplease reach out to 'jill.lua' or submit a bug report in the Moon X Discord.\nYour feedback is appreciated to help improve the script!  "
+})
+
+Tabs.Info:AddParagraph({
+    Title = "⚠️ - Disclaimer 2",
+    Content = "Do NOT execute the script multiple times.\nIf it breaks, relaunch Roblox as it might break and or crash the game."
+})
+
+local TeleportD = TeleportS:AddDropdown("TeleportD", {
+	Title = "Teleports",
+	Values = {"Click","Center","Wall","Platform","UnderMap"},
+	Multi = false,
+	Default = 1,
+})
+
+TeleportD:OnChanged(function(Value)
+	if Value ~= "Click" then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = teleportvals[Value]
+	else
+
+	end
+end)
+
+wait(0.04)
+local DropdownPlayer = BringOptions:AddDropdown("DropdownPlayer", {
+	Title = "Player to perform actions to.",
+	Values = {"Click"},
+	Multi = false,
+	Default = 1,
+})
+
+DropdownPlayer:OnChanged(function(Value)
+	getgenv().tpplr = Value
+	getgenv().fdeathplr = Value
+end)
+
+local TPom = BringOptions:AddKeybind("TPom", {
+	Title = "TP Player off map",
+	Mode = "Toggle", -- Always, Toggle, Hold
+	Default = "C", -- String as the name of the keybind (MB1, MB2 for mouse buttons)
+
+	Callback = function(Value)
+
+	end,
+
+	ChangedCallback = function(New)
+
+	end
+})
+
+TPom:OnClick(function()
+	local cpart = game.Players.LocalPlayer.Character.HumanoidRootPart
+	local cpos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+	cpart.CFrame = CFrame.new(-11000,10010000,-11000)
+
+	wait(1)
+	cpart.CFrame = cpos
+end)
+
+local TPum = BringOptions:AddKeybind("TPom", {
+	Title = "TP Player Into The Void",
+	Mode = "Toggle",
+	Default = "V",
+
+	Callback = function(Value)
+
+	end,
+
+	ChangedCallback = function(New)
+
+	end
+})
+
+TPum:OnClick(function()
+	local cpart = game.Players.LocalPlayer.Character.HumanoidRootPart
+	local cpos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+	cpart.CFrame = CFrame.new(-100000000,300,-100000000)
+
+	wait(1)
+	cpart.CFrame = cpos
+end)
+
+BringOptions:AddParagraph({
+	Title = "Tutorial",
+	Content = "Be Wild Phsychic and hold first move+space then press C.\nOr use Hero Hunter and use first move then press c accordingly.\nEffectivness can vary with lag."
+})
+
+local TPpl = BringOptions:AddKeybind("TPpl", {
+	Title = "Teleport player to where you are.",
+	Mode = "Toggle",
+	Default = "T",
+
+	Callback = function(Value)
+
+	end,
+
+	ChangedCallback = function(New)
+
+	end
+})
+
+TPpl:OnClick(function()
+	local cpart = game.Players.LocalPlayer.Character.HumanoidRootPart
+	local cpos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+	local plr = game.Players[getgenv().tpplr] 
+
+	local plrpart = plr.Character.HumanoidRootPart
+
+	cpart.CFrame = plrpart.CFrame
+	wait(0.2)
+	local args = {
+		[1] = {
+			["Tool"] = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Crushing Pull"),
+			["CrushingPull"] = plr.Character,
+			["Goal"] = "Console Move",
+			["ToolName"] = "Crushing Pull"
+		}
+	}
+
+	game:GetService("Players").LocalPlayer.Character.Communicate:FireServer(unpack(args))
+
+	wait(.2)
+	cpart.CFrame = cpos
+end)
+
+BringOptions:AddButton({
+	Title = "Teleport player to jail.",
+	Description = "Teleports player to the cutscene box.",
+	Callback = function()
+		local cpart = game.Players.LocalPlayer.Character.HumanoidRootPart
+		local cpos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+		local plr = game.Players[getgenv().tpplr] 
+		local prisonL = CFrame.new(-65.85687255859375, 36.00065231323242, 20382.96484375)
+
+		local plrpart = plr.Character.HumanoidRootPart
+
+		cpart.CFrame = plrpart.CFrame
+		wait(0.4)
+		local args = {
+			[1] = {
+				["Tool"] = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Crushing Pull"),
+				["CrushingPull"] = plr.Character,
+				["Goal"] = "Console Move",
+				["ToolName"] = "Crushing Pull"
+			}
+		}
+
+		game:GetService("Players").LocalPlayer.Character.Communicate:FireServer(unpack(args))
+		cpart.CFrame = prisonL
+		wait(1.5)
+		cpart.CFrame = cpos
+	end
+})
+
+BringOptions:AddParagraph({
+	Title = "Tutorial",
+	Content = "You must be Wild Psychic for this to work!\njust press the keybind/button.\nMake sure who you are tp'ing is not in a combo/a moved."
+})
+
+local Nostunt = CharacterMan:AddToggle("Nostunt", {Title = "No Stun", Default = false })
+
+Nostunt:OnChanged(function()
+	getgenv().nostun = Options.Nostunt.Value
+end)
+
+local autofroze = MapAutos:AddToggle("autofroze", {Title = "Auto Frozen Soul", Default = false })
+
+autofroze:OnChanged(function()
+	getgenv().autofrozen = Options.autofroze.Value
+end)
+
+MapAutos:AddParagraph({
+	Title = "Tutorial",
+	Content = "When the custom moveset 'Frozen Soul' spawns on the map, automatically teleports.\nThis may lag depending on your wait timer!\nOnce you teleport you may disable this."
+})
+
+local fdeath = AutoFarm:AddToggle("fdeath", {Title = "Farm Deaths", Default = false })
+
+
+fdeath:OnChanged(function()
+	getgenv().farmdeaths = Options.fdeath.Value
+end)
+
+AutoFarm:AddParagraph({
+	Title = "Tutorial",
+	Content = "This will automatically teleport to someone and die.\nThey can get their ultimate fast or to heal as Hero Hunter\nThis Does NOT give YOU, OR THE OTHER PLAYER, and kills.\nThis is completely automatic.\nDo not do anything while it's running"
+})
+
+Movesets:AddButton({
+	Title = "Check for death counter",
+	Description = "Checks all players for saitama ultimate",
+	Callback = function()
+		checkfordc()
+	end
+})
+
+Movesets:AddParagraph({
+	Title = "Tutorial",
+	Content = "This creates a red highlight on anybody in the server with saitama ultimate.\nThis should automatically remove from them when they dont."
+})
+
+local CSpeed = CharacterMan:AddToggle("CSpeed", {Title = "CSpeed", Default = false })
+
+CSpeed:OnChanged(function()
+	print("Toggle changed:", Options.CSpeed.Value)
+	getgenv().cframe = Options.CSpeed.Value
+end)
+
+local CSpeedV = CharacterMan:AddSlider("CSpeedV", {
+	Title = "CFrame Speed Value",
+	Description = "This goes from 1-9.",
+	Default = 2,
+	Min = 1,
+	Max = 9,
+	Rounding = 1,
+	Callback = function(Value)
+
+	end
+})
+
+CSpeedV:OnChanged(function(Value)
+	local newspeed = Value/10
+
+	getgenv().speedvalue = newspeed
+	task.wait(0.05)
+end)
+
+ScriptExec:AddButton({
+	Title = "Infinite Yield",
+	Description = "Executes Infinite Yield (Admin Commands)",
+	Callback = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+	end
+})
+
+local Ado = Tabs.Admin:AddToggle("Ado", {Title = "Give Others Admin", Default = false })
+
+Ado:OnChanged(function()
+	getgenv().adminon = Options.Ado.Value
+end)
+
+local SelectAdmin = Tabs.Admin:AddDropdown("SelectAdmin", {
+	Title = "Players",
+	Values = {"Click"},
+	Multi = false,
+	Default = 1,
+})
+
+SelectAdmin:OnChanged(function(Value)
+	getgenv().AssignedPlayer = Value
+end)
+
+Tabs.Admin:AddButton({
+	Title = "Print Commands",
+	Description = "Prints all the commands your admin friend can use.",
+	Callback = function()
+		for i,v in pairs(commands) do
+			print("Long versions:"..v)
+
+		end
+		for i,e in pairs(SHcommands) do
+			--print("Short versions:"..e)
+		end
+	end
+})
+
+local ALA = SettingFunc:AddToggle("ALA", {Title = "Anti Lag", Default = false })
+
+ALA:OnChanged(function()
+	getgenv().antilag = Options.ALA.Value
+	task.wait(0.1)
+end)
+
+SettingFunc:AddParagraph({
+	Title = "Anti Lag",
+	Content = "- Automatically deleted trees and walls to improve performance. -"
+})
+
+local AUP = SettingFunc:AddToggle("AUP", {Title = "Auto Refresh Playerlists", Default = true })
+
+AUP:OnChanged(function()
+	getgenv().autoplayerlist = Options.AUP.Value
+end)
+
+local waittimer = SettingFunc:AddSlider("waittimer", {
+	Title = "Wait Timer",
+	Description = "The lower = the laggier.",
+	Default = 5,
+	Min = 3,
+	Max = 30,
+	Rounding = 1,
+	Callback = function(Value)
+		local newval = Value /10
+
+		getgenv().waitt = newval
+	end
+})
+
+SettingFunc:AddParagraph({
+	Title = "Platforms",
+	Content = "This changes how long everything checks and does actions.\nThe lower this is, the more laggy the script will be.\nThe higher this is, the less it lags. (some things might break like speed)"
+})
+
+PartCreation:AddButton({
+	Title = "Spawn Platforms",
+	Description = "Respawns the platforms to tp onto.",
+	Callback = function()
+		platformE()
+	end
+})
+
+PartCreation:AddParagraph({
+	Title = "Platforms",
+	Content = "- Respawns the platforms above and below the map -\nOnly do this if they are missing, the game checks wrong parts in workspace"
+})
+
+local uncapfps = GameSettings:AddSlider("uncapfps", {
+	Title = "Uncap FPS",
+	Description = "Un-caps FPS to any value.",
+	Default = 144,
+	Min = 10,
+	Max = 600,
+	Rounding = 10,
+	Callback = function(Value)
+		local db = false
+		if db == false then
+			db = true
+			local num = tonumber(Value)
+			setfpscap(num)
+			task.wait(.1)
+			db = false
+		else
+			task.wait(.1)
+		end
+	end
+})
+
+local ChangeTheme = GUISettings:AddDropdown("ChangeTheme", {
+	Title = "Change GUI Theme",
+	Values = {"Darker","Dark","Light","Aqua","Amethyst","Rose"},
+	Multi = false,
+	Default = 1,
+})
+
+ChangeTheme:OnChanged(function(Value)
+	Window.Theme = Value
+end)
+
+Window:SelectTab(1)
+
+Fluent:Notify({
+	Title = "Cumsploit",
+	Content = "Welcome :3",
+	Duration = 4
+})
+
+local function PErformance()
+	pcall(function()
+		for i,v in pairs(game.workspace:GetDescendants()) do
+			if v:IsA("Part") then
+				v.Material = Enum.Material.SmoothPlastic
+			end
+		end
+
+		wait(0.1)
+		local grass = game.workspace.Map["GrassTop"]
+		local walls = game.workspace.Map["Walls"]
+		local trees = game.workspace.Map["Trees"]
+
+		grass:Destroy()
+		wait(0.1)
+		walls:Destroy()
+		wait(0.1)
+		trees:Destroy()
+		getgenv().wait = 3
+		getgenv().dropdownwait = 30
+	end)
+end
+
+wait(1)
+Window:Dialog({
+	Title = "Activate Performance Mode?",
+	Content = "Slower loops, smooth plastic textures, no walls/trees, etc.",
+	Buttons = {
+		{ 
+			Title = "Yes",
+			Callback = function()
+				PErformance()
+			end 
+		}, {
+			Title = "No",
+			Callback = function()
+
+			end 
+		}
+	}
+})
+
+getgenv().autoplayerlist = true
+
+coroutine.wrap(function()
+    while task.wait(1) do
+        if getgenv().autoplayerlist then
+
+            local PlayerNames = {}
+
+            for _, Player in ipairs(game.Players:GetChildren()) do
+                if Player.Name ~= game.Players.LocalPlayer.Name then
+                    table.insert(PlayerNames, Player.Name)
+                end
+            end
+
+            DropdownPlayer:SetValues(PlayerNames)
+            wait(3)
+            SelectAdmin:SetValues(PlayerNames)
+            task.wait(getgenv().dropdownwait)
+
+        else
+
+        end
+    end
+end)()
+
+local function findPlayerByPartialName(partialName)
+    local lowerPartialName = string.lower(partialName)
+    for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+        if string.match(string.lower(player.Name), lowerPartialName) then
+            return player
+        end
+    end
+    return nil
+end
+
+local function executecommand(executor, msg)
+    CHAR = game.Players.LocalPlayer.Character
+    if msg == "!finisher" then
+        CHAR.HumanoidRootPart.CFrame = executor.Character.HumanoidRootPart.CFrame
+        task.wait(.2)
+        CHAR.Humanoid.Health = 0
+        task.wait(12)
+        CHAR.HumanoidRootPart.CFrame = teleportvals["Wall"]
+    elseif msg == "!tptop" then
+        CHAR.HumanoidRootPart.CFrame = executor.Character.HumanoidRootPart.CFrame
+        task.wait(.4)
+        local args = {
+            [1] = {
+                ["Tool"] = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Crushing Pull"),
+                ["CrushingPull"] = executor.Character,
+                ["Goal"] = "Console Move",
+                ["ToolName"] = "Crushing Pull"
+            }
+        }
+        game:GetService("Players").LocalPlayer.Character.Communicate:FireServer(unpack(args))
+        task.wait(0.2)
+        CHAR.HumanoidRootPart.CFrame = teleportvals["Wall"]
+    elseif string.match(msg, "!jail") then
+        local pos = executor.Character.HumanoidRootPart.CFrame
+        local t1 = string.split(msg, " ")
+        local plr = findPlayerByPartialName(t1[2])
+        if plr then
+            CHAR.HumanoidRootPart.CFrame = plr.Character.HumanoidRootPart.CFrame
+            task.wait(.3)
+            local args = {
+                [1] = {
+                    ["Tool"] = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Crushing Pull"),
+                    ["CrushingPull"] = plr.Character,
+                    ["Goal"] = "Console Move",
+                    ["ToolName"] = "Crushing Pull"
+                }
+            }
+            game:GetService("Players").LocalPlayer.Character.Communicate:FireServer(unpack(args))
+            task.wait(.2)
+            CHAR.HumanoidRootPart.CFrame = teleportvals["Jail"]
+            task.wait(3)
+            CHAR.HumanoidRootPart.CFrame = teleportvals["Wall"]
+        end
+    elseif string.match(msg, "!bring") then
+        local pos = executor.Character.HumanoidRootPart.CFrame
+        local t1 = string.split(msg, " ")
+        local plr = findPlayerByPartialName(t1[2])
+        if plr then
+            CHAR.HumanoidRootPart.CFrame = plr.Character.HumanoidRootPart.CFrame
+            task.wait(.2)
+            local args = {
+                [1] = {
+                    ["Tool"] = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Crushing Pull"),
+                    ["CrushingPull"] = plr.Character,
+                    ["Goal"] = "Console Move",
+                    ["ToolName"] = "Crushing Pull"
+                }
+            }
+            game:GetService("Players").LocalPlayer.Character.Communicate:FireServer(unpack(args))
+            task.wait(.2)
+            CHAR.HumanoidRootPart.CFrame = executor.Character.HumanoidRootPart.CFrame
+            task.wait(1)
+            CHAR.HumanoidRootPart.CFrame = teleportvals["Wall"]
+        end
+    elseif msg == "!tpb" then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = executor.Character.HumanoidRootPart.CFrame
+    end
+end
+
+
+while task.wait(2) do
+    if not getgenv().adminon then
+
+    else
+        local curadmin1 = getgenv().AssignedPlayer or nil
+	    local curadmin2 = game:GetService("Players"):FindFirstChild(curadmin1)
+	    if getgenv().adminon and curadmin2 then
+		    curadmin2.Chatted:Connect(function(msg)
+                print("Doing cmd : "..msg)
+			    executecommand(curadmin2, msg)
+		    end)
+	    end
+    end
+end
